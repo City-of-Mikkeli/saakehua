@@ -7,8 +7,8 @@ var app = express();
 var http = require('http').Server(app);
 var io = require('socket.io')(http);
 
-app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'pug');
+app.set('views', path.join(__dirname, 'views'));
 app.use(express.static(path.join(__dirname, 'public')));
 
 app.get('/', function(req, res){
