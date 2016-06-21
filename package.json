@@ -1,0 +1,18 @@
+{
+  "name": "saakehua",
+  "version": "0.0.1",
+  "description": "Web application to show comments from different social media feeds with specified hashtags",
+  "main": "app.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Mikkelin Kaupunki",
+  "license": "GPL-3.0",
+  "dependencies": {
+    "express": "^4.14.0",
+    "pug": "^2.0.0-beta3",
+    "socket.io": "^1.4.6",
+    "twitter": "^1.3.0",
+    "youtube-node": "^1.3.0"
+  }
+}
