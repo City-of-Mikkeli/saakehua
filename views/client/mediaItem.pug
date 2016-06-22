@@ -1,0 +1,17 @@
+- var truncateText = function(text){  
+-   if(text.length > 160){
+-     return text.substring(0, 160)+'...';
+-   }else{
+-     return text;
+-   }
+- }
+.grid-item
+  .grid-item-container
+    span.icon-container.pull-right
+      i(class=icon)
+    p #{truncateText(text)}
+    if img
+      img.img-responsive(src=img)
+    .media-controls
+      span.like-container 1
+        i.fa.fa-heart-o
