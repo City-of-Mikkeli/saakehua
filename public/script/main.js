@@ -12,17 +12,11 @@
   });
   
   socket.on('post:received', function(data){
-    var item = $('<div/>')
-      .addClass('grid-item')
-      .append($('<p/>').text(data.text));
-    if(data.img) {
-      item.append(
-        $('<img/>')
-          .addClass('img-responsive')
-          .attr('src', data.img)
-      )
-    }
+    var item = $(renderMediaItem(data));
     $('.grid').prepend(item).masonry( 'prepended', item );
+    item.imagesLoaded(function(){
+      $('.grid').masonry('layout');
+    });   
   });
   
 })();
