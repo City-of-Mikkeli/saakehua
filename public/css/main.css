@@ -1,6 +1,11 @@
 html, body {
   background-color: #bbb;
 }
+.jumbotron {
+  background-image: url('../img/mikkeli.jpg');
+  background-size: cover;
+  color: #fff;
+}
 .grid-sizer,
 .grid-item { 
   width: 100%;
