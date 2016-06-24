@@ -5,13 +5,22 @@
 -     return text;
 -   }
 - }
-.grid-item
+- var getRandomClass = function(){  
+-   var number = Math.floor( Math.random() * 10 );
+-   if(number > 7){
+-     return 'grid-item grid-item-featured';
+-   }else{
+-     return 'grid-item';
+-   }
+- }
+div(class=getRandomClass())
   .grid-item-container
     span.icon-container.pull-right
       i(class=icon)
-    p #{truncateText(text)}
+    a(href=link, taget='blank')
+      p #{truncateText(text)}
     if img
       img.img-responsive(src=img)
     .media-controls
-      span.like-container 1
+      span.like-container #{likes}
         i.fa.fa-heart-o

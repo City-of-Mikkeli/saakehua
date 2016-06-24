@@ -11,6 +11,10 @@ html, body {
   width: 100%;
   padding: 10px;
 }
+.grid-item-featured {
+  width: 100%;
+  padding: 10px;
+}
 @media screen and (min-width: 768px) {
   .grid-sizer,
   .grid-item { 
@@ -24,6 +28,10 @@ html, body {
     width: 20%;
     padding: 10px;
   }
+  .grid-item-featured {
+    width: 40%;
+    padding: 10px;
+  }
 }
 .grid-item-container {
   background-color: #fff;
@@ -31,7 +39,7 @@ html, body {
   -moz-box-shadow: 3px 3px 5px 0px rgba(0,0,0,0.75);
   box-shadow: 3px 3px 5px 0px rgba(0,0,0,0.75);
 }
-.grid-item-container > p {
+.grid-item-container > a > p {
   padding: 15px;
   padding-top:25px;
   font-size: 18px;
@@ -59,4 +67,5 @@ html, body {
   font-size: 36px;
   color: #AAA;
   vertical-align: middle;
+  cursor: pointer;
 }
