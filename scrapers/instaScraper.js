@@ -17,7 +17,9 @@ exports.scrape = function(tag, callback){
             img: media[i].thumbnail_src,
             tags: media[i].caption.match(/#[a-zA-Z0-9äöÖÄ]+/g),
             date: new Date((media[i].date * 1000)),
-            icon: 'fa fa-instagram'
+            icon: 'fa fa-instagram',
+            link: INSTA_URL+'/p/'+media[i].code,
+            likes: media[i].likes.count
           });
         }
         callback(null, result);

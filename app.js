@@ -51,7 +51,9 @@ client.stream('statuses/filter', {track: '#food'},  function(stream) {
         img: tweet.entities.media ? tweet.entities.media[0].media_url_https : null,
         tags: tweet.entities.hashtags.map(function(tag){ return '#'+tag.text; }),
         date: new Date(tweet.created_at),
-        icon: 'fa fa-twitter'
+        icon: 'fa fa-twitter',
+        link: 'https://twitter.com/statuses/'+tweet.id_str,
+        likes: tweet.favorite_count
       };
       io.emit('post:received', data);
     }
