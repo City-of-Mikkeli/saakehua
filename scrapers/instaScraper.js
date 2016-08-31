@@ -12,14 +12,14 @@ exports.scrape = function(tag, callback){
         var result = [];
         for(var i = 0; i < media.length;i++){
           result.push({
-            _id: media[i].code,
+            code: media[i].code,
             text: media[i].caption,
             img: media[i].thumbnail_src,
             tags: media[i].caption.match(/#[a-zA-Z0-9äöÖÄ]+/g),
             date: new Date((media[i].date * 1000)),
             icon: 'fa fa-instagram',
             link: INSTA_URL+'/p/'+media[i].code,
-            likes: media[i].likes.count
+            likes: 0
           });
         }
         callback(null, result);
