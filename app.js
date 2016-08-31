@@ -2,13 +2,12 @@ var path = require('path');
 var express = require('express');
 var pug = require('pug');
 var conf = require('./config');
-var ig = require('./scrapers/instaScraper');
-var Twitter = require('twitter');
 var fs = require('fs');
 var mongoose = require('mongoose');
 mongoose.connect('mongodb://localhost/saakehua');
 var Item = require('./model/item');
-var async = require('async');
+var InstaConnector = require('./connectors/instaConnector');
+var TwitterConnector = require('./connectors/twitterConnector');
 
 var clientTemplates = fs.readdirSync(__dirname + '/views/client');
 var compiledClientTemplates = [];
@@ -22,63 +21,20 @@ for (var i = 0; i < clientTemplates.length; i++) {
 }
 fs.writeFileSync(__dirname + '/public/script/templates.js', compiledClientTemplates.join(''));
 
-var client = new Twitter({
-  consumer_key: conf.twitter.consumer_key,
-  consumer_secret: conf.twitter.consumer_secret,
-  access_token_key: conf.twitter.access_token_key,
-  access_token_secret: conf.twitter.access_token_secret
-});
-
-
-
 var app = express();
 
 var http = require('http').Server(app);
 var io = require('socket.io')(http);
 
+var instaConnector = new InstaConnector(io);
+var twitterConnector = new TwitterConnector(io);
+
+instaConnector.connect();
+twitterConnector.connect();
+
 app.set('view engine', 'pug');
 app.set('views', path.join(__dirname, 'views'));
 app.use(express.static(path.join(__dirname, 'public')));
-
-function saveItem(data, callback){
-  Item.count({code: data.code}, function (err, count) {
-    if (err) {
-      callback(err);
-    } else {
-      if (count > 0) {
-        callback();
-      } else {
-        var item = new Item(data);
-        item.save(function(err, item){
-          if(err){
-            callback(err);
-          }else{
-            io.emit('post:received', item);   
-            callback();   
-          }
-        });
-      } 
-    }
-  }); 
-}
-
-setInterval(function(){
-  async.eachSeries(conf.tags, function(tag, callback){
-    ig.scrape(tag, function(err, results){
-      async.eachSeries(results, saveItem, function(err){
-        if(err){
-          callback(err)
-        }else{
-          callback();
-        }
-      })
-    });
-  }, function(err){
-    if(err){
-      console.log(err);
-    }
-  });
-}, 30000)
 
 io.on('connection', function (socket) {
    Item
@@ -103,32 +59,6 @@ io.on('connection', function (socket) {
           socket.offset += 10;
         });
     });
-});
-
-client.stream('statuses/filter', {track: conf.tags.join(',')},  function(stream) {
-  stream.on('data', function(tweet) {
-    if(!tweet.retweeted_status) {
-      var data = {
-        code: tweet.id,
-        text: tweet.text,
-        img: tweet.entities.media ? tweet.entities.media[0].media_url_https : null,
-        tags: tweet.entities.hashtags.map(function(tag){ return '#'+tag.text; }),
-        date: new Date(tweet.created_at),
-        icon: 'fa fa-twitter',
-        link: 'https://twitter.com/statuses/'+tweet.id_str,
-        likes: 0//tweet.favorite_count
-      };
-      saveItem(data, function(err){
-        if(err){
-          console.log(err);
-        }
-      });
-    }
-  });
-
-  stream.on('error', function(error) {
-    console.log(error);
-  });
 });
 
 app.get('/', function(req, res){
