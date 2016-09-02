@@ -5,7 +5,6 @@ var conf = require('./config');
 var fs = require('fs');
 var mongoose = require('mongoose');
 mongoose.connect('mongodb://localhost/saakehua');
-var Item = require('./model/item');
 var InstaConnector = require('./connectors/instaConnector');
 var TwitterConnector = require('./connectors/twitterConnector');
 
@@ -36,30 +35,7 @@ app.set('view engine', 'pug');
 app.set('views', path.join(__dirname, 'views'));
 app.use(express.static(path.join(__dirname, 'public')));
 
-io.on('connection', function (socket) {
-   Item
-    .find({})
-    .sort({'date': -1})
-    .limit(20)
-    .exec(function(err, items) {
-      for(var i = 0; i < items.length;i++){
-        socket.emit('post:received', items[i]);
-      }
-      socket.offset = 20;
-    });
-    
-    socket.on('load:more', function(){
-      Item
-        .find({})
-        .sort({'date': -1})
-        .skip(socket.offset)
-        .limit(10)
-        .exec(function(err, items) {
-          socket.emit('more:loaded', items);
-          socket.offset += 10;
-        });
-    });
-});
+require('./io')(io);
 
 app.get('/', function(req, res){
   res.render('index');
