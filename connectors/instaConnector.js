@@ -30,7 +30,7 @@ class InstaConnector extends Connector {
           console.log(err);
         }
       });
-    }, 5000)
+    }, 180000)
   }
   scrape(tag, callback) {
     request(INSTA_URL + '/explore/tags/' + tag, function (error, response, body) {
