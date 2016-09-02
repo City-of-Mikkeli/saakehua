@@ -1,9 +1,12 @@
 extends layout
 
+block view_script
+  script(src='/script/countdown.js', defer='defer')
+
 block content
-  .jumbotron
+  .jumbotron.hidden-xs.hidden-sm
     .container
-      h1 #KehtaaKehuaMli
+      h1#countdown
   .container-fluid
     .grid
       .grid-sizer
