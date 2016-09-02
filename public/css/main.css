@@ -1,10 +1,18 @@
 html, body {
   background-color: #bbb;
 }
+body {
+  padding-top: 50px;
+}
 .jumbotron {
   background-image: url('../img/mikkeli.jpg');
   background-size: cover;
   color: #fff;
+  min-height: 400px;
+  text-align: center;
+}
+#countdown {
+  margin-top:80px;
 }
 .grid-sizer,
 .grid-item { 
