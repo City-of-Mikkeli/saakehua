@@ -2,3 +2,4 @@ node_modules
 .settings
 config.js
 public/script/templates.js
+public/uploads
