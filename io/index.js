@@ -99,6 +99,17 @@ module.exports = function (io) {
         });
     });
 
+    socket.on('post:liked', function (data) {
+      Item
+        .findOne({_id: data._id})
+        .exec(function (err, item) {
+          if(!err && item) {
+            item.likes = item.likes + 1;
+            item.save();
+          }
+        });
+    });
+
     socket.on('post:sent', function (data) {
       if (data.text.length > 0) {
         var item = new Item();
