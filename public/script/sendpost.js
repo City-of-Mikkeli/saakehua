@@ -5,7 +5,27 @@
 
     var socket = io.connect();
     var uploader = new SocketIOFileUpload(socket);
-    uploader.listenOnInput(document.getElementById('postFileInput'));
+    $('#postFileInput').change(function (e) {
+      loadImage.parseMetaData(e.target.files[0], function (data) {
+        var options = {
+          maxWidth: 800,
+          maxHeight: 800,
+          canvas: true
+        };
+        if (typeof data.exif !== 'undefined') {
+          var orientation = data.exif.get('Orientation');
+          if (orientation) {
+            options.orientation = orientation;
+          }
+        }
+        loadImage(e.target.files[0], function (canvas) {
+          canvas.toBlob(function (blob) {
+            var file = new File([blob], e.target.files[0].name);
+            uploader.submitFiles([file]);
+          });
+        }, options);
+      });
+    });
     uploader.addEventListener('start', function (event) {
       $('.fileUploadContainer').hide();
       $('.progress-container').show();
@@ -40,13 +60,13 @@
       $('.image-container').empty();
       $('.fileUploadContainer').show();
     });
-    $('.sendPostBtn').click(function(){
+    $('.sendPostBtn').click(function () {
       var text = $('#postTextInput').val();
-      if(text.length > 0) {
+      if (text.length > 0) {
         var data = {
-          text : text,
-          tags : $('#postTagsInput').tagsinput('items'),
-          image : $('#postImageUrl').length > 0 ? $('#postImageUrl').val() : null
+          text: text,
+          tags: $('#postTagsInput').tagsinput('items'),
+          image: $('#postImageUrl').length > 0 ? $('#postImageUrl').val() : null
         }
         socket.emit('post:sent', data);
       }
