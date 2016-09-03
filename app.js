@@ -3,6 +3,7 @@ var express = require('express');
 var pug = require('pug');
 var conf = require('./config');
 var fs = require('fs');
+var siofu = require('socketio-file-upload');
 var mongoose = require('mongoose');
 mongoose.connect('mongodb://localhost/saakehua');
 var InstaConnector = require('./connectors/instaConnector');
@@ -34,11 +35,16 @@ twitterConnector.connect();
 app.set('view engine', 'pug');
 app.set('views', path.join(__dirname, 'views'));
 app.use(express.static(path.join(__dirname, 'public')));
+app.use(siofu.router);
 
 require('./io')(io);
 
 app.get('/', function(req, res){
   res.render('index');
+});
+
+app.get('/sendpost', function(req, res){
+  res.render('sendpost');
 });
 
 http.listen(conf.port, function(){
