@@ -14,36 +14,54 @@ module.exports = function (io) {
     uploader.listen(socket);
 
     uploader.on('start', function (event) {
-      var filename = uuid.v1();
-      socket.fileupload = {};
-      socket.fileupload.filename = filename;
-      socket.fileupload.mimetype = null;
+      try {
+        var filename = uuid.v1();
+        socket.fileupload = {};
+        socket.fileupload.filename = filename;
+        socket.fileupload.mimetype = null;
+      } catch (error) {
+        console.log('Error starting upload.');
+        console.log(error);
+        socket.emit('fileupload:failed', { message: 'Error starting upload' });
+      }
     });
     uploader.on('progress', function (event) {
-      if (socket.fileupload.mimetype == null) {
-        var filemime = fileType(event.buffer);
-        var mimetype = filemime !== null ? filemime.mime : null;
-        if (mimetype !== null && conf.supportedMimetypes.indexOf(mimetype) > -1) {
-          socket.fileupload.mimetype = mimetype;
-          socket.fileWriter = fs.createWriteStream(__dirname + '/../public/uploads/' + socket.fileupload.filename);
-          socket.fileWriter.write(event.buffer);
-          event.file.meta.uuid = socket.fileupload.filename;
-          event.file.meta.mimetype = socket.fileupload.mimetype;
+      try {
+        if (socket.fileupload.mimetype == null) {
+          var filemime = fileType(event.buffer);
+          var mimetype = filemime !== null ? filemime.mime : null;
+          if (mimetype !== null && conf.supportedMimetypes.indexOf(mimetype) > -1) {
+            socket.fileupload.mimetype = mimetype;
+            socket.fileWriter = fs.createWriteStream(__dirname + '/../public/uploads/' + socket.fileupload.filename);
+            socket.fileWriter.write(event.buffer);
+            event.file.meta.uuid = socket.fileupload.filename;
+            event.file.meta.mimetype = socket.fileupload.mimetype;
+          } else {
+            uploader.abort(event.file.id, socket);
+            socket.emit('fileupload:failed', { message: 'Tuettuja tiedostomuotoja ovat: ' + conf.supportedMimetypes.join(', ') });
+          }
         } else {
-          uploader.abort(event.file.id, socket);
-          socket.emit('fileupload:failed', { message: 'Tuettuja tiedostomuotoja ovat: ' + conf.supportedMimetypes.join(', ') });
+          socket.fileWriter.write(event.buffer);
         }
-      } else {
-        socket.fileWriter.write(event.buffer);
+      } catch (error) {
+        console.log('Error during upload.');
+        console.log(error);
+        socket.emit('fileupload:failed', { message: 'Error during upload' });
       }
     });
     uploader.on('complete', function (event) {
-      if (event.interrupt) {
-        socket.emit('fileupload:failed', { message: 'Tiedonsiirto keskeytettiin' });
-      } else {
-        socket.emit('fileupload:success', { file: socket.fileupload.filename });
+      try {
+        if (event.interrupt) {
+          socket.emit('fileupload:failed', { message: 'Tiedonsiirto keskeytettiin' });
+        } else {
+          socket.emit('fileupload:success', { file: socket.fileupload.filename });
+        }
+        socket.fileWriter.end();
+      } catch (error) {
+        console.log('Error completing upload.');
+        console.log(error);
+        socket.emit('fileupload:failed', { message: 'Error completing upload' });
       }
-      socket.fileWriter.end();
     });
 
     Item
@@ -101,9 +119,9 @@ module.exports = function (io) {
 
     socket.on('post:liked', function (data) {
       Item
-        .findOne({_id: data._id})
+        .findOne({ _id: data._id })
         .exec(function (err, item) {
-          if(!err && item) {
+          if (!err && item) {
             item.likes = item.likes + 1;
             item.save();
           }
