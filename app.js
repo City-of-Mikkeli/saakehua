@@ -47,6 +47,10 @@ app.get('/sendpost', function(req, res){
   res.render('sendpost');
 });
 
+app.get('/info', function(req, res){
+  res.render('info');
+});
+
 http.listen(conf.port, function(){
   console.log('listening on *:3000');
 });
