@@ -1,7 +1,11 @@
 extends layout
 
+block view_css
+  link(rel='stylesheet', href='/css/main.css')
+
 block view_script
   script(src='/script/countdown.js', defer='defer')
+  script(src='/script/main.js', defer='defer')
 
 block content
   .jumbotron.hidden-xs.hidden-sm

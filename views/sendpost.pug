@@ -1,0 +1,30 @@
+extends layout
+
+block view_css
+  link(rel='stylesheet', href='/lib/bootstrap-tagsinput/bootstrap-tagsinput.css')
+  link(rel='stylesheet', href='/css/sendpost.css')
+
+block view_script
+  script(src='/siofu/client.js', defer='defer')
+  script(src='/lib/bootstrap-tagsinput/bootstrap-tagsinput.min.js', defer='defer')
+  script(src='/script/sendpost.js', defer='defer')
+
+block content
+  .container
+    h3 Lähetä kehusi suoraan tästä!
+    div
+      .form-group
+        label(for='postTextInput') Kehu
+        textarea#postTextInput.form-control
+      .form-group
+        label(for='postTagsInput') Avainsanat eli hashtagit
+        input#postTagsInput(type='text')
+      .form-group.fileUploadContainer
+        label(for='exampleInputFile') File input
+        input#postFileInput(type='file')
+        p.help-block Voit lisätä kehuusi myös kuvan.
+      .progress-container
+        .progress
+          .progress-bar(role='progressbar')
+      .image-container
+      button.btn.btn-default.btn-lg.sendPostBtn(type='submit') Lähetä

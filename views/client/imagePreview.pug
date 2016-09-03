@@ -1,0 +1,7 @@
+.row
+  .col-md-3.col-sm-4
+    .panel.panel-default
+      .panel-body
+        i.glyphicon.glyphicon-remove.removefile
+        img.center-block.image-preview(src='/uploads/'+filename)
+        input#postImageUrl(type='hidden', value='/uploads/'+filename)
