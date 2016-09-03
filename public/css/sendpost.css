@@ -1,0 +1,18 @@
+.bootstrap-tagsinput {
+  width:100%;
+}
+.progress-container {
+  display: none;
+}
+.image-preview {
+  max-width: 150px;
+  margin-bottom:20px;
+}
+.removefile {
+  font-size: 24px;
+  color:#ff0000;
+  cursor: pointer;
+  position: absolute;
+  top: 3px;
+  right: 18px;
+}
