@@ -31,7 +31,7 @@
       $('.progress-container').show();
     });
     uploader.addEventListener('progress', function (event) {
-      var progress = event.bytesLoaded / event.file.size;
+      var progress = Math.floor((event.bytesLoaded / event.file.size) * 100);
       $('.progress-container .progress-bar').css('width', progress + '%');
     });
     socket.on('fileupload:failed', function (data) {
