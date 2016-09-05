@@ -15,6 +15,26 @@ class TwitterConnector extends Connector {
     });
   }
   connect() {
+    this.client.get('search/tweets', {q: conf.tags.join(' OR ')}, (error, tweets, response) => {
+      for(var i = 0; i < tweets.statuses.length;i++){
+        var tweet = tweets.statuses[i];
+        var data = {
+            code: tweet.id,
+            text: tweet.text,
+            img: tweet.entities.media ? tweet.entities.media[0].media_url_https : null,
+            tags: tweet.entities.hashtags.map(function (tag) { return '#' + tag.text; }),
+            date: new Date(tweet.created_at),
+            icon: 'fa fa-twitter',
+            link: 'https://twitter.com/statuses/' + tweet.id_str,
+            likes: 0
+        };
+        this.saveItem(data, err => {
+          if (err) {
+            console.log(err);
+          }
+        });
+      }
+    });
     this.client.stream('statuses/filter', { track: conf.tags.join(',') }, stream => {
       stream.on('data', tweet => {
         if (!tweet.retweeted_status) {
