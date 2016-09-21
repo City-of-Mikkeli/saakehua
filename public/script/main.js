@@ -25,13 +25,27 @@
     return [];
   }
 
+  function locationHashChanged() {
+    var code = location.hash;
+    console.log(code);
+    if(code.length > 1) {
+      code = code.substring(1);
+      $.getJSON('/item/'+code, function(item) {
+        bootbox.dialog({
+          title: '',
+          message: renderItemModal({item: item})
+        });  
+      });
+    }
+  }
+
   function setLikes(likes) {
     var d = new Date();
     d.setTime(d.getTime() + (365 * 24 * 60 * 60 * 1000));
     var expires = 'expires=' + d.toUTCString();
     document.cookie = 'likes=' + JSON.stringify(likes) + '; ' + expires;
   }
-
+  
   $(document).ready(function () {
     $('.grid').masonry({
       itemSelector: '.grid-item',
@@ -100,5 +114,12 @@
       });
     }
   });
+
+  if ('onhashchange' in window) {
+    window.onhashchange = locationHashChanged;
+    if(location.hash.length > 1) {
+      locationHashChanged();
+    }
+  }
 
 })();
