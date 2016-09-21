@@ -8,7 +8,8 @@ var itemSchema = mongoose.Schema({
   date : Date,
   icon : String,
   link : String,
-  likes : Number
+  likes : Number,
+  email: String
 });
 
 module.exports = mongoose.model('Item', itemSchema);

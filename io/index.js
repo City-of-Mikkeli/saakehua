@@ -135,9 +135,10 @@ module.exports = function (io) {
         item.text = data.text + ' ' + data.tags.join(' ');
         item.tags = data.tags;
         item.img = data.image;
+        item.email = data.email;
         item.date = new Date();
         item.icon = 'fa fa-smile-o';
-        item.link = '/';
+        item.link = '#'+item.code;
         item.likes = 0;
         item.save(function (err, item) {
           if (err) {
