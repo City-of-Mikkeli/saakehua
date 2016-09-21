@@ -66,7 +66,8 @@
         var data = {
           text: text,
           tags: $('#postTagsInput').tagsinput('items'),
-          image: $('#postImageUrl').length > 0 ? $('#postImageUrl').val() : null
+          image: $('#postImageUrl').length > 0 ? $('#postImageUrl').val() : null,
+          email: $('#postEmailInput').val()
         }
         socket.emit('post:sent', data);
       }

@@ -28,4 +28,8 @@ block content
         .progress
           .progress-bar(role='progressbar')
       .image-container
+      .form-group
+        label(for='postEmailInput') Sähköposti
+        input#postEmailInput.form-control(type='email')
+        p.help-block Tätä ei näytetä missään mutta tarvitaan mahdollisen kuvakisan voittajan tavoittamiseksi.
       button.btn.btn-default.btn-lg.sendPostBtn(type='submit') Lähetä
