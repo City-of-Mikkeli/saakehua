@@ -6,6 +6,7 @@ var fs = require('fs');
 var siofu = require('socketio-file-upload');
 var mongoose = require('mongoose');
 mongoose.connect('mongodb://localhost/saakehua');
+var Item = require('./model/item');
 var InstaConnector = require('./connectors/instaConnector');
 var TwitterConnector = require('./connectors/twitterConnector');
 
@@ -26,10 +27,10 @@ var app = express();
 var http = require('http').Server(app);
 var io = require('socket.io')(http);
 
-var instaConnector = new InstaConnector(io);
+//var instaConnector = new InstaConnector(io);
 var twitterConnector = new TwitterConnector(io);
 
-instaConnector.connect();
+//instaConnector.connect();
 twitterConnector.connect();
 
 app.set('view engine', 'pug');
@@ -49,6 +50,18 @@ app.get('/sendpost', function(req, res){
 
 app.get('/info', function(req, res){
   res.render('info');
+});
+
+app.get('/item/:code', function(req, res) {
+  var code = req.params.code;
+  Item.findOne({code : code}, function(err, item){
+    if(err || !item) {
+      res.status(404).send();
+    }else{
+      res.send(item);
+    }
+  });
+
 });
 
 http.listen(conf.port, function(){
